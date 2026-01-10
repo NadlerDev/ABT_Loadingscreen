@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABT Resources |Simple Loading Screen</title>
+    <style>
+        :root {
+            --bg-1: #0b0b0c;
+            --bg-2: #1f1f21;
+            --accent: #5aa9ff;
+            --muted: #9aa0a6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            cursor: default;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+            background: radial-gradient(1200px 600px at 10% 10%, rgba(90, 169, 255, 0.04), transparent),
+                linear-gradient(180deg, var(--bg-1), var(--bg-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #e6eef8;
+        }
+
+        .card {
+            width: 98%;
+            height: 90%;
+            border-radius: 14px;
+            padding: 28px;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .card .right {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px 6px;
+        }
+
+        .title {
+            font-size: clamp(18px, 3.8vh, 36px);
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+        .progress-wrap {
+            margin-top: 18px;
+        }
+
+        .progress {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .progress>.fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), #3b82f6);
+            box-shadow: 0 6px 18px rgba(59, 130, 246, 0.12);
+            transition: width 0.5s ease-out;
+        }
+
+        .progress-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        input[type='range'] {
+            appearance: none;
+            background: transparent;
+            height: 10px;
+            cursor: pointer;
+        }
+
+        input[type='range']::-webkit-slider-runnable-track {
+            height: 8px;
+            background: linear-gradient(90deg, #2b2b2b, #2f2f2f);
+            border-radius: 999px;
+        }
+
+        input[type='range']::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #fff, #dfefff);
+            box-shadow: 0 4px 14px rgba(9, 20, 40, 0.6);
+            margin-top: -5px;
+            border: 2px solid rgba(90, 169, 255, 0.14);
+            cursor: pointer;
+        }
+
+        .tip-text {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .ImageWarp {
+            top: -1vh;
+            left: 63vh;
+            width: 150vh;
+            height: 86vh;
+            position: absolute;
+        }
+
+        .ImageWarp img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+        }
+
+        .ImageWarp img.active {
+            opacity: 1;
+        }
+
+
+        audio {
+            display: none;
+        }
+
+        @media (max-width: 720px) {
+            .card {
+                flex-direction: column;
+                height: auto;
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <audio id="loadingMusic" loop>
+        <source src="./musicc.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="card">
+        <div class="right">
+            <div>
+                <div class="title">SERVERNAME</div>
+                <div class="subtitle">Preparing your session, please wait :)</div>
+                <div style="margin-top:18px;display:flex;align-items:center;gap:12px">
+                    <div class="controls">
+                        <div style="color:var(--muted);font-size:13px">Volume</div>
+                        <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5">
+                        <div id="volumeValue"
+                            style="color:var(--accent);font-weight:600;min-width:44px;text-align:center;">50%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="line-height: 1.7vh; text-align:left;color:var(--muted);font-size:13px;max-width:200px;">
+                <h1 style="text-align:left;text-transform:uppercase;font-size:1.5vh">Tool Tip:</h1>
+                Welcome – Loading server resources. You can mute/unmute with <strong
+                    style="color:var(--accent); background-color: #2b2b2b; padding: .2vh; border-radius: .5vh; font-size: 1vh; border: solid rgba(63, 63, 63) .1vh; border-bottom: solid rgb(63, 63, 63) .3vh !important;">Space</strong>.
+            </div>
+            <div class="ImageWarp">
+                <img class="biker active" src="./img/biker.png" alt="1">
+                <img class="duo" src="./img/duo.png" alt="2">
+                <img class="gottengains" src="./img/gottengains.png" alt="3">
+                <img class="heist" src="./img/heist.png" alt="4">
+                <img class="solo" src="./img/solo.png" alt="5">
+            </div>
+            <div>
+                <div class="progress-wrap">
+                    <div class="progress">
+                        <div class="fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-meta">
+                        <div id="progressText">0% loaded</div>
+                        <div id="statusText">Connecting...</div>
+                    </div>
+                </div>
+                <div class="tip-text" id="muteHint">Press Space to mute music.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const audio = document.getElementById('loadingMusic');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const statusText = document.getElementById('statusText');
+        const muteHint = document.getElementById('muteHint');
+
+        let lastVolume = 0.5;
+        audio.volume = 0.5;
+        audio.play().catch(() => console.log('Audio autoplay prevented'));
+
+        function updateMuteHint() {
+            if (audio.volume === 0) {
+                muteHint.textContent = 'Music is muted - Press Space to unmute.';
+            } else {
+                muteHint.textContent = 'Press Space to mute music.';
+            }
+        }
+
+        volumeSlider.addEventListener('input', (e) => {
+            const vol = parseFloat(e.target.value);
+            audio.volume = vol;
+            volumeValue.textContent = Math.round(vol * 100) + '%';
+            if (vol > 0) {
+                lastVolume = vol;
+            }
+            updateMuteHint();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (audio.volume === 0) {
+                    audio.volume = lastVolume;
+                    volumeSlider.value = lastVolume;
+                    volumeValue.textContent = Math.round(lastVolume * 100) + '%';
+                } else {
+                    lastVolume = audio.volume;
+                    audio.volume = 0;
+                    volumeSlider.value = 0;
+                    volumeValue.textContent = '0%';
+                }
+                updateMuteHint();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const images = document.querySelectorAll('.ImageWarp img');
+            let currentImageIndex = Math.floor(Math.random() * images.length);
+
+            images.forEach(img => img.classList.remove('active'));
+            images[currentImageIndex].classList.add('active');
+
+            function nextImage() {
+                images[currentImageIndex].classList.remove('active');
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                images[currentImageIndex].classList.add('active');
+            }
+            setInterval(nextImage, 4500);
+        });
+
+        window.addEventListener('message', (e) => {
+            console.log('Received message:', e.data);
+            const data = e.data;
+
+            if (data.eventName === 'updateProgress') {
+                const percent = data.progress || 0;
+                console.log('Updating progress to:', percent);
+                progressFill.style.width = percent + '%';
+                progressText.textContent = percent + '% loaded';
+
+                if (data.message) {
+                    statusText.textContent = data.message;
+                }
+            }
+
+            if (data.eventName === 'startInitFunctionOrder') {
+                statusText.textContent = 'Starting game...';
+            }
+            if (data.eventName === 'initFunctionInvoking') {
+                statusText.textContent = `Loading: ${data.type || 'resources'}`;
+            }
+            if (data.eventName === 'startDataFileEntries') {
+                statusText.textContent = 'Loading game files...';
+            }
+            if (data.eventName === 'performMapLoadFunction') {
+                statusText.textContent = 'Loading map...';
+            }
+            if (data.eventName === 'onLogLine') {
+                statusText.textContent = data.message || 'Loading...';
+            }
+
+            if (data.count !== undefined && data.total !== undefined) {
+                const percent = Math.round((data.count / data.total) * 100);
+                progressFill.style.width = percent + '%';
+                progressText.textContent = percent + '% loaded';
+            }
+        });
+
+    </script>
+</body>
+
+</html>
