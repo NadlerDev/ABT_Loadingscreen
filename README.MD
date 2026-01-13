@@ -50,6 +50,7 @@ ensure ABT_LoadingScreen
 ## 📞 Support
 
 - **Discord:** [https://discord.gg/W8Utk3ynMj]
+https://forum.cfx.re/t/free-release-abt-simple-loading-screen/5377556
 - **Response Time:** Within 24 hours
 
 ---
